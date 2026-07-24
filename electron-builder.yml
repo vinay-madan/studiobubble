@@ -1,0 +1,55 @@
+appId: dev.studiobubble.app
+productName: StudioBubble
+directories:
+  output: release
+  buildResources: build
+files:
+  - dist/**/*
+  - electron/**/*
+  - package.json
+extraMetadata:
+  main: electron/main.cjs
+
+mac:
+  category: public.app-category.video
+  icon: build/icon.png
+  target:
+    - target: dmg
+      arch: [x64, arm64]
+  # No Apple Developer account yet, so we skip codesigning/notarization entirely rather than
+  # produce a half-signed build. Users will see a Gatekeeper "unidentified developer" warning
+  # and need to right-click -> Open the first time. See README for the full workaround.
+  identity: null
+  hardenedRuntime: false
+  gatekeeperAssess: false
+
+dmg:
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+
+win:
+  icon: build/icon.png
+  target:
+    - target: nsis
+      arch: [x64]
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+
+linux:
+  icon: build/icon.png
+  target:
+    - target: AppImage
+      arch: [x64]
+  category: AudioVideo
+
+publish:
+  provider: github
+  releaseType: release

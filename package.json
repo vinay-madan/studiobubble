@@ -1,13 +1,24 @@
 {
   "name": "studiobubble",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.3.0",
   "type": "module",
+  "main": "electron/main.cjs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vinay-madan/studiobubble.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "electron:dev": "concurrently -k \"vite\" \"cross-env ELECTRON_START_URL=http://localhost:5173 wait-on tcp:5173 && cross-env ELECTRON_START_URL=http://localhost:5173 electron .\"",
+    "electron:build": "npm run build && electron-builder --config electron-builder.yml",
+    "electron:build:mac": "npm run build && electron-builder --mac --config electron-builder.yml",
+    "electron:build:win": "npm run build && electron-builder --win --config electron-builder.yml",
+    "electron:build:linux": "npm run build && electron-builder --linux --config electron-builder.yml",
+    "electron:release": "npm run build && electron-builder --config electron-builder.yml --publish always"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^0.10.35",
@@ -23,9 +34,14 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
+    "concurrently": "^9.1.0",
+    "cross-env": "^7.0.3",
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8",
     "oxlint": "^1.71.0",
     "typescript": "~6.0.2",
     "vite": "^8.1.1",
-    "vite-plugin-pwa": "^1.3.0"
+    "vite-plugin-pwa": "^1.3.0",
+    "wait-on": "^8.0.1"
   }
 }
