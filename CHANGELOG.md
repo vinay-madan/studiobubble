@@ -3,6 +3,17 @@
 All notable changes to StudioBubble are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/).
 
+## [v0.3.1] — Setup screen layout fix
+
+### Fixed
+- The core layout rule was accidentally scoped to `main.content` in CSS, but every screen
+  renders `<div className="content">` (not a `<main>` tag), so it never matched — every screen
+  was silently falling back to stacked block divs instead of the intended flex layout. This is
+  why the Setup screen required scrolling to reach "Start recording."
+- Setup screen restructured into three columns (settings, background/bubble/framing, camera
+  preview) with Theme + Start recording pinned in a footer that's always visible, no scrolling
+  required
+
 ## [v0.3.0] — Downloadable desktop app for Windows and macOS
 
 **Highlights:** StudioBubble now ships as an installable desktop app, not just a browser tab.
@@ -72,6 +83,7 @@ client-side.
 - Pause/resume, 3-2-1 countdown, keyboard shortcuts (`Space` pause, `S` stop, `M` mic, `C` bubble)
 - Basic recordings library and light/dark theme
 
+[v0.3.1]: https://github.com/vinay-madan/studiobubble/releases/tag/v0.3.1
 [v0.3.0]: https://github.com/vinay-madan/studiobubble/releases/tag/v0.3.0
 [v0.2.0]: https://github.com/vinay-madan/studiobubble/releases/tag/v0.2.0
 [v0.1.0]: https://github.com/vinay-madan/studiobubble/releases/tag/v0.1.0
