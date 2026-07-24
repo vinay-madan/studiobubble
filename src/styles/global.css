@@ -45,7 +45,8 @@ button {
 }
 
 .app-shell {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   background: radial-gradient(circle at 20% -10%, rgba(124, 92, 255, 0.12), transparent 60%), var(--bg);
@@ -109,11 +110,16 @@ button {
   cursor: pointer;
 }
 
-main.content {
+/* Was accidentally scoped to `main.content`, which never matched since screens render
+   a plain <div className="content"> — every screen was silently falling back to
+   unstyled stacked block divs instead of this flex layout. */
+.content {
   flex: 1;
+  min-height: 0;
   padding: 24px;
   display: flex;
   gap: 24px;
+  overflow-y: auto;
 }
 
 .panel {
@@ -121,6 +127,39 @@ main.content {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 18px;
+}
+
+/* Setup screen: fills the .content area itself, scrolls its own settings columns,
+   and keeps the Start recording action pinned in a footer that's always visible -
+   no scrolling required to find it. */
+.setup-screen {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.setup-scroll {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  overflow-y: auto;
+  padding-bottom: 18px;
+}
+
+.setup-footer {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 18px;
+  margin-top: 18px;
+  border-top: 1px solid var(--border);
 }
 
 .field-label {

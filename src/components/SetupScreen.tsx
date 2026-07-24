@@ -104,8 +104,10 @@ export function SetupScreen({ onStart }: { onStart: () => void }) {
   }
 
   return (
-    <div className="content" style={{ flexWrap: 'wrap' }}>
-      <div className="panel" style={{ width: 380, display: 'flex', flexDirection: 'column', gap: 18 }}>
+    <div className="content">
+      <div className="setup-screen">
+        <div className="setup-scroll">
+      <div className="panel" style={{ width: 340, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 18 }}>
         <div>
           <span className="field-label">Layout</span>
           <div className="pill-group" style={{ flexDirection: 'column' }}>
@@ -185,26 +187,7 @@ export function SetupScreen({ onStart }: { onStart: () => void }) {
         </div>
       </div>
 
-      <div className="panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 18 }}>
-        {settings.layout !== 'screen-only' && (
-          <div>
-            <span className="field-label">Camera preview</span>
-            <video ref={camPreviewRef} muted playsInline style={{ width: 240, borderRadius: 12, background: '#000' }} />
-            <select
-              style={{ marginTop: 8 }}
-              value={settings.cameraDeviceId ?? ''}
-              onChange={(e) => updateSettings({ cameraDeviceId: e.target.value || null })}
-            >
-              <option value="">System default</option>
-              {cameras.map((c) => (
-                <option key={c.deviceId} value={c.deviceId}>
-                  {c.label || 'Camera'}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
+      <div className="panel" style={{ flex: 1, minWidth: 280, display: 'flex', flexDirection: 'column', gap: 18 }}>
         {settings.layout !== 'screen-only' && (
           <div>
             <span className="field-label row">
@@ -316,9 +299,28 @@ export function SetupScreen({ onStart }: { onStart: () => void }) {
             </div>
           )}
         </div>
+      </div>
 
-        <div className="spacer" />
-        <div className="row" style={{ justifyContent: 'flex-end' }}>
+      {settings.layout !== 'screen-only' && (
+        <div className="panel" style={{ width: 280, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <span className="field-label">Camera preview</span>
+          <video ref={camPreviewRef} muted playsInline style={{ width: '100%', borderRadius: 12, background: '#000' }} />
+          <select
+            value={settings.cameraDeviceId ?? ''}
+            onChange={(e) => updateSettings({ cameraDeviceId: e.target.value || null })}
+          >
+            <option value="">System default</option>
+            {cameras.map((c) => (
+              <option key={c.deviceId} value={c.deviceId}>
+                {c.label || 'Camera'}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+        </div>
+
+        <div className="setup-footer">
           <button className="ghost-btn row" onClick={() => useAppStore.getState().toggleTheme()}>
             {settings.theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />} Theme
           </button>

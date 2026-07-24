@@ -9,6 +9,24 @@ and export. Nothing is uploaded anywhere.
 
 ![StudioBubble architecture](docs/architecture.svg)
 
+## Download
+
+Grab a ready-to-run build from the [Releases page](https://github.com/vinay-madan/studiobubble/releases/latest) — no `npm install` required:
+
+| Platform | File |
+|---|---|
+| Windows | `StudioBubble-Setup-x.y.z.exe` |
+| macOS (Apple Silicon & Intel) | `StudioBubble-x.y.z.dmg` |
+| Linux | `StudioBubble-x.y.z.AppImage` |
+
+The macOS build is currently unsigned (no Apple Developer account yet), so Gatekeeper will
+call it "from an unidentified developer." **Right-click the app → Open** the first time to run
+it — you only need to do this once. Windows SmartScreen may show a similar one-time warning
+("Windows protected your PC") → **More info → Run anyway**.
+
+Prefer the browser instead of installing anything? StudioBubble is also a normal web app — see
+[Deploy](#deploy) below, or just run it locally with the Quick start steps.
+
 ## Features
 
 - **Layouts**: screen + camera bubble, screen only, camera only
@@ -31,6 +49,8 @@ and export. Nothing is uploaded anywhere.
 - **Recordings library**: reads from a folder you choose (File System Access API) or from local
   browser storage (OPFS) if you skip that step
 - **Light/dark theme**, installable PWA, fully offline after first load
+- **Downloadable desktop app** for Windows, macOS, and Linux (Electron), built and published
+  automatically via GitHub Releases
 
 ## Quick start
 
@@ -82,10 +102,46 @@ Because capture APIs (`getDisplayMedia`, `getUserMedia`, File System Access) req
 context, everything above works out of the box (all four give you HTTPS or `localhost`) —
 there's nothing extra to configure for that.
 
+## Desktop app (Windows / macOS / Linux)
+
+StudioBubble also ships as an installable desktop app via [Electron](https://www.electronjs.org/),
+for people who'd rather download something than open a browser tab. It's the same app — an
+Electron `BrowserWindow` loading the same built `dist/` output over a local static server —
+plus a native screen/window picker for `getDisplayMedia`, wired up via Electron's
+`desktopCapturer`.
+
+**Build locally:**
+
+```bash
+npm run electron:dev          # dev mode: live-reloading Vite + Electron
+npm run electron:build        # package for your current OS
+npm run electron:build:mac    # or target a specific OS
+npm run electron:build:win
+npm run electron:build:linux
+```
+
+Installers land in `release/`.
+
+**Publish a release automatically:** push a tag and the `.github/workflows/release.yml`
+workflow builds all three platforms in parallel (each on its native OS — a `.dmg` has to be
+built on macOS, an `.exe` on Windows) and attaches the installers to a GitHub Release:
+
+```bash
+npm version 0.3.0   # bumps package.json and creates a git tag
+git push --follow-tags
+```
+
+One caveat: the floating Document Picture-in-Picture control deck is a browser-only API and
+isn't available inside Electron — the button simply doesn't render there, same graceful
+fallback as an unsupported browser. Everything else (recording, virtual backgrounds, zoom,
+trim/export, the library) works identically to the web version.
+
 ## Releases
 
 See [CHANGELOG.md](./CHANGELOG.md) for full release notes.
 
+- **v0.3.0** — downloadable desktop installers for Windows, macOS, and Linux, built and
+  published automatically from a GitHub Actions release workflow.
 - **v0.2.0** — virtual backgrounds (blur/replace), live zoom & spotlight, scene framing, the
   floating Document PiP deck, and review-screen trim/convert/audio-enhance.
 - **v0.1.0** — the initial local-first recording loop: layouts, the draggable camera bubble,
@@ -122,6 +178,12 @@ src/
   components/           Setup / Recording / Review / Library screens, floating deck, UI bits
   state/store.ts        zustand store for settings + session state
   types.ts               shared types, quality presets, curated backdrops
+electron/
+  main.cjs              window creation, getDisplayMedia handler, permissions
+  staticServer.cjs       serves dist/ over http://127.0.0.1 so PWA/OPFS behave like a real tab
+  picker.html            native-feeling screen/window picker UI
+docs/
+  architecture.svg       the diagram at the top of this README
 ```
 
 ## License
