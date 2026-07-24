@@ -7,6 +7,8 @@ similarly-scoped project inspired by [framecast](https://github.com/nathan-fisca
 Everything runs on-device: capture, compositing, encoding/muxing (via [mediabunny](https://mediabunny.dev)),
 and export. Nothing is uploaded anywhere.
 
+![StudioBubble architecture](docs/architecture.svg)
+
 ## Features
 
 - **Layouts**: screen + camera bubble, screen only, camera only
@@ -63,6 +65,31 @@ Security → Screen Recording → enable your browser, then restart it).
 | Trim / convert / enhance | mediabunny `CanvasSink` + `AudioSampleSink`/`AudioSampleSource`, re-encoding locally | your CPU/GPU |
 
 No servers, no uploads, no telemetry.
+
+## Deploy
+
+StudioBubble is a static site — no backend, no database, no environment variables. Any static
+host works; pick whichever you already use.
+
+| Target | How |
+|---|---|
+| **Vercel** | Import the repo at [vercel.com/new](https://vercel.com/new) — `vercel.json` is already configured (Vite preset, SPA rewrite). |
+| **Netlify** | Import the repo at [app.netlify.com/start](https://app.netlify.com/start) — `netlify.toml` sets the build command and publish dir. |
+| **GitHub Pages** | Push to `main` — `.github/workflows/deploy-pages.yml` builds and deploys automatically. If you're serving from `<user>.github.io/<repo>` rather than a custom domain, uncomment the `--base=/<repo>/` line in the workflow. |
+| **Docker / self-host** | `docker build -t studiobubble . && docker run -p 8080:80 studiobubble` — builds with Node, serves the static output with nginx. |
+
+Because capture APIs (`getDisplayMedia`, `getUserMedia`, File System Access) require a secure
+context, everything above works out of the box (all four give you HTTPS or `localhost`) —
+there's nothing extra to configure for that.
+
+## Releases
+
+See [CHANGELOG.md](./CHANGELOG.md) for full release notes.
+
+- **v0.2.0** — virtual backgrounds (blur/replace), live zoom & spotlight, scene framing, the
+  floating Document PiP deck, and review-screen trim/convert/audio-enhance.
+- **v0.1.0** — the initial local-first recording loop: layouts, the draggable camera bubble,
+  crash-safe OPFS recording, mic controls, and a basic library.
 
 ## Honest differences from framecast
 
