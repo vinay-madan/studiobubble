@@ -26,8 +26,7 @@ jobs:
       - run: npm ci
       # If deploying to <user>.github.io/<repo> (not a custom domain or user/org page),
       # uncomment the line below so built asset URLs resolve under the repo subpath.
-      # - run: npm run build -- --base=/${{ github.event.repository.name }}/
-      - run: npm run build
+      - run: npm run build -- --base=/${{ github.event.repository.name }}/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
